@@ -1,0 +1,61 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: cluster-policies-dev-pg
+policyDefaults:                                     
+  namespace: config-policies
+  remediationAction: inform
+  categories:
+    - "Individual configuration (DEV)"
+    - "Cluster selector addon-config=dev"
+  placement:                 
+    clusterSelectors:        
+      addon-config: "dev"  
+policies:                    
+  - name: ingress-replicas-dev
+    manifests:               
+      - path: manifests/ingress
+    controls:
+      - "manifests/ingress" 
+    standards:
+      - "Ingress configuration"
+  - name: tekton-install-dev
+    manifests:               
+      - path: manifests/tekton
+    controls:
+      - "manifests/tekton" 
+    standards:
+      - "Additional operators"
+    categories:
+      - "Cluster selector tekton-install=dev"
+    placement:                 
+      clusterSelectors:        
+        tekton-install: "dev"
+  - name: custom-cloud-console-dev
+    remediationAction: enforce  
+    manifests:               
+      - path: manifests/console-logo/logo-cloud
+      - path: manifests/console-logo/console.yaml
+    controls:
+      - "manifests/console-logo" 
+    standards:
+      - "Console configuration"
+    categories:
+      - "Cluster selector custom-console=cloud"
+    placement:                 
+      clusterSelectors:        
+        custom-console: "cloud"
+  - name: custom-onprem-console-dev
+    remediationAction: enforce  
+    manifests:               
+      - path: manifests/console-logo/logo-onprem
+      - path: manifests/console-logo/console.yaml
+    controls:
+      - "manifests/console-logo" 
+    standards:
+      - "Console configuration"
+    categories:
+      - "Cluster selector custom-console=onprem"
+    placement:                 
+      clusterSelectors:        
+        custom-console: "onprem"

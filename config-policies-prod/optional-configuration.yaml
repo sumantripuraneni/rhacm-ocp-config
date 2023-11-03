@@ -1,0 +1,33 @@
+apiVersion: policy.open-cluster-management.io/v1
+kind: PolicyGenerator
+metadata:
+  name: cluster-policies-prod-pg
+policyDefaults:                                     
+  namespace: config-policies
+  remediationAction: inform
+  categories:
+    - "Individual configuration (PROD)"
+    - "Cluster selector addon-config=prod"
+  placement:                 
+    clusterSelectors:        
+      addon-config: "prod"  
+policies:                    
+  - name: ingress-replicas-prod
+    manifests:               
+      - path: manifests/ingress
+    controls:
+      - "manifests/ingress" 
+    standards:
+      - "Ingress configuration"
+  - name: tekton-install-prod
+    manifests:               
+      - path: manifests/tekton
+    controls:
+      - "manifests/tekton" 
+    standards:
+      - "Additional operators"
+    categories:
+      - "Cluster selector tekton-install=prod"
+    placement:                 
+      clusterSelectors:        
+        tekton-install: "prod"

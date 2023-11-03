@@ -1,0 +1,7 @@
+kind: ConfigMap                                   
+apiVersion: v1
+metadata:
+  name: xxx-cluster-name
+  namespace: config-policies
+data:
+  ingress-replicas: '3'

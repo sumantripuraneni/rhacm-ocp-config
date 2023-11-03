@@ -1,0 +1,38 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: sample-application-set
+  namespace: openshift-gitops
+spec:
+  generators:
+    - clusterDecisionResource:
+        configMapRef: acm-placement
+        labelSelector:
+          matchLabels:
+            cluster.open-cluster-management.io/placement: base-appsets-true
+        requeueAfterSeconds: 180
+  syncPolicy:
+    preserveResourcesOnDeletion: false
+  template:
+    metadata:
+      name: sample-application-{{name}}
+    spec:
+      project: default
+      source:
+        repoURL: https://github.com/argoproj/argocd-example-apps.git
+        targetRevision: master
+        path: guestbook
+      destination:
+        namespace: sample-application
+        server: "{{server}}"
+      syncPolicy:
+        syncOptions:
+          - CreateNamespace=true
+          - PruneLast=true
+          - Replace=true
+          - ApplyOutOfSyncOnly=true
+          - Validate=false
+        automated:
+          prune: true
+          allowEmpty: true
+          selfHeal: true
